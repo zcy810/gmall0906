@@ -5,6 +5,7 @@ import com.atguigu.gmall.user.bean.UserAdd;
 import com.atguigu.gmall.user.bean.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,8 +22,9 @@ public class UserController {
        return userService.getList();
     }
     @RequestMapping("get/Add/by/id/{id}")
-    public List<UserAdd> getAddById(){
-        return null;
+    @ResponseBody
+    public List<UserAdd> getAddById(@PathVariable("id") Integer id){
+        return userService.getAddById(id);
     }
 
 }
