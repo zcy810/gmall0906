@@ -1,4 +1,4 @@
-package com.atguigu.gmall.user.bean;
+package com.atguigu.gmall.bean;
 
 public class UserAdd {
     private String id;
@@ -54,5 +54,29 @@ public class UserAdd {
 
     public void setDefault(Boolean aDefault) {
         isDefault = aDefault;
+    }
+
+    public UserAdd() {
+    }
+
+    public UserAdd(String id, String userAddress, String userId, String consignee, String phoneNum, Boolean isDefault) {
+        this.id = id;
+        this.userAddress = userAddress;
+        this.userId = userId;
+        this.consignee = consignee;
+        this.phoneNum = phoneNum;
+        this.isDefault = isDefault;
+    }
+
+    @Override
+    public String toString() {
+        return "UserAdd{" +
+                "id='" + id + '\'' +
+                ", userAddress='" + userAddress + '\'' +
+                ", userId='" + userId + '\'' +
+                ", consignee='" + consignee + '\'' +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", isDefault=" + isDefault +
+                '}';
     }
 }

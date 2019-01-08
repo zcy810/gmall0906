@@ -1,6 +1,6 @@
 package com.atguigu.gmall.user.mapper;
 
-import com.atguigu.gmall.user.bean.UserAdd;
+import com.atguigu.gmall.bean.UserAdd;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
