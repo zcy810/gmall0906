@@ -1,15 +1,46 @@
 package com.atguigu.gmall.bean;
 
+
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 public class BaseAttrInfo implements Serializable{
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+    @Column
     private String attrName;
+    @Column
     private String catalog3Id;
+    @Column
     private String isEnabled;
+    @Transient
+    private List<BaseAttrValue> attrValueList;
+
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseAttrInfo{" +
+                "id='" + id + '\'' +
+                ", attrName='" + attrName + '\'' +
+                ", catalog3Id='" + catalog3Id + '\'' +
+                ", isEnabled='" + isEnabled + '\'' +
+                ", attrValueList=" + attrValueList +
+                '}';
+    }
+
+    public List<BaseAttrValue> getAttrValueList() {
+        return attrValueList;
+    }
+
+    public void setAttrValueList(List<BaseAttrValue> attrValueList) {
+        this.attrValueList = attrValueList;
     }
 
     public void setId(String id) {

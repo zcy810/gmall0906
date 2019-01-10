@@ -2,9 +2,8 @@ package com.atguigu.gmall.manage.controller;
 
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.atguigu.gmall.bean.BaseCatalog1;
+import com.atguigu.gmall.bean.*;
 
-import com.atguigu.gmall.bean.BaseCatalog2;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.atguigu.service.ManageService;
@@ -30,5 +29,24 @@ public class CatalogController {
 
         List<BaseCatalog2> list2 =  manageService.getLog1(catalog1Id);
         return list2;
+    }@ResponseBody
+    @RequestMapping("getCatalog3")
+    public List<BaseCatalog3> getCatalog2Page3(String catalog2Id){
+
+        List<BaseCatalog3> list3 =  manageService.getLog3(catalog2Id);
+        return list3;
+    }
+    @ResponseBody
+    @RequestMapping("getAttrList")
+    public List<BaseAttrInfo> getAttrList1(String catalog3Id){
+
+        return manageService.getAttrList(catalog3Id);
+    }
+    @ResponseBody
+    @RequestMapping("getAttrValueList")
+    public List<BaseAttrValue> getBaseAttrValue(String attrId){
+        System.out.println("attrId=" + attrId);
+        BaseAttrInfo attrInfo = manageService.getAttrInfo(attrId);
+        return attrInfo.getAttrValueList();
     }
 }

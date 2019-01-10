@@ -16,6 +16,16 @@ public class BaseAttrValue implements Serializable {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "BaseAttrValue{" +
+                "id='" + id + '\'' +
+                ", valueName='" + valueName + '\'' +
+                ", attrId='" + attrId + '\'' +
+                ", isEnabled='" + isEnabled + '\'' +
+                '}';
+    }
+
     public String getValueName() {
         return valueName;
     }
