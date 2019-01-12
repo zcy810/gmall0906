@@ -54,13 +54,13 @@
         <input id="attrName" name="attrName" class="easyui-textbox" data-options="" style="width: auto">
         <input id="attrId" name="attrName" type="hidden">
         <br/>
-        <table id="dg_av" class="easyui-datagrid" title="属性值列表" width="100%"style="height: auto"/>
+        <table id="dg_av" class="easyui-datagrid" title="属性值列表" width="100%" style="height: auto"/>
 
     </form>
 </div>
 
 <div id="bb">
-    <a href="javascript:saveAttr()" class="easyui-linkbutton">保存</a>
+    <a href="javascript:savaAttr()" class="easyui-linkbutton">保存</a>
     <a class="easyui-linkbutton" href="">关闭</a>
 </div>
 <script>
@@ -83,14 +83,14 @@
                 {field: 'id', title: '表哈皮', width: '20%'},
                 {
                     field: 'valueName', title: '属性值名称', width: '80%', editor: {
-                    type: 'validatebox', options: { required: true}
+                    type: 'validatebox', options: {required: true}
                 }
                 }
             ]],
             toolbar: [{
                 text: '添加', iconCls: 'icon-add',
                 handler: function () {
-                    datagrid.datagrid('appendRow',{id:'',valueName:''});
+                    datagrid.datagrid('appendRow', {id: '', valueName: ''});
 
                 }
 
@@ -116,52 +116,80 @@
 
 
     function addAttrInfo() {
+
         var catalog3Id = $("#ctg3ForAttrList").combobox("getValue");
         if (catalog3Id == null || catalog3Id == "") {
             alert("请选择数据!")
             return;
+        }else{
+            $("#dlg").dialog("open");
+            $("#attrId").val("");
+            $("#attrName").textbox('clear');
+            $("#dg_av").datagrid({url: ""});
+            initAttrValueDatagrid();
         }
-        $("#attrId").val("");
-        $("#attrName").textbox('clear');
-        $("#dg_av").datagrid({url: ""});
-        initAttrValueDatagrid();
-        $("#dlg").dialog("open");
+
+
     }
+
     function editAttrInfo() {
         var catalog3Id = $("#ctg3ForAttrList").combobox("getValue");
         if (catalog3Id == null || catalog3Id == "") {
             alert("请选择数据!")
             return;
-        }
-        initAttrValueDatagrid();
-        var attrInfoRow=$("#dg").datagrid('getSelected');
-       if(attrInfoRow == null){
-           alert("请先选择一个属性!!");
-           return;
-       }
+        } else {
+            var attrInfoRow = $("#dg").datagrid('getSelected');
+            if (attrInfoRow == null) {
+                alert("请先选择一个属性!!");
+                return;
+            } else {
+                $("#dlg").dialog("open");
+                initAttrValueDatagrid();
+                $("#dg_av").datagrid({url: "getAttrValueList?attrId=" + attrInfoRow.id});
+                $("#attrId").val(attrInfoRow.id);
+                $("#attrName").textbox('setValue', attrInfoRow.attrName);
+            }
 
-        $("#dg_av").datagrid({url:"getAttrValueList?attrId="+attrInfoRow.id});
-        $("#attrId").val(attrInfoRow.id);
-        $("#attrName").textbox('setValue',attrInfoRow.attrName);
-        $("#dlg").dialog("open");
+        }
+
+
     }
+
     function savaAttr() {
         var attrJson = {};
         var attrValueRows = $("#dg_av").datagrid('getRows');
-        for (var i = 0;i <attrValueRows.length;i++ ){
+        for (var i = 0; i < attrValueRows.length; i++) {
             attrJson["attrValueList[" + i + "].id"] = attrValueRows[i].id;
             attrJson["attrValueList[" + i + "].valueName"] = attrValueRows[i].valueName;
         }
-        attrJson["attrName"]=$("#attrName").val();
-        attrJson["id"]=$("#attrId").val();
-        attrJson["catalog3Id"]=$("#ctg3ForAttrList").combobox('getValue');
-        $.post("saveAttrInfo",attrJson,function (data) {
+        attrJson["attrName"] = $("#attrName").val();
+        attrJson["id"] = $("#attrId").val();
+        attrJson["catalog3Id"] = $("#ctg3ForAttrList").combobox('getValue');
+        $.post("saveAttrInfo", attrJson, function (data) {
             $("#dlg").dialog("close");
             $("#dg").datagrid("reload");
         })
+    }
 
-
-
+    function delAttrInfo() {
+        var catalog3Id = $("#ctg3ForAttrList").combobox("getValue");
+        if (catalog3Id == null || catalog3Id == "") {
+            alert("请选择数据!")
+            return;
+        } else {
+            var attrInfoRow = $("#dg").datagrid('getSelected');
+            if (attrInfoRow == null) {
+                alert("请先选择一个属性!!");
+                return;
+            } else {
+                $("#attrId").val(attrInfoRow.id);
+                $("#attrName").textbox('setValue', attrInfoRow.attrName);
+                if (confirm("你确定要删除 [" + $("#attrName").val() + "] 吗?")) {
+                    $("#dg_av").datagrid({url: "delAttrValueList?attrId=" + attrInfoRow.id});
+                    $("#dg").datagrid({url: "getAttrList?catalog3Id=" + catalog3Id});
+                }
+            }
+        }
     }
 
 

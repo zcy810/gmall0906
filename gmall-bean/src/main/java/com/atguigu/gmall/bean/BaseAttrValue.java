@@ -1,11 +1,18 @@
 package com.atguigu.gmall.bean;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 public class BaseAttrValue implements Serializable {
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+    @Column
     private String valueName;
+    @Column
     private String attrId;
+    @Column
     private String isEnabled;
 
     public String getId() {
@@ -16,7 +23,7 @@ public class BaseAttrValue implements Serializable {
         this.id = id;
     }
 
-    @Override
+/*    @Override
     public String toString() {
         return "BaseAttrValue{" +
                 "id='" + id + '\'' +
@@ -24,7 +31,7 @@ public class BaseAttrValue implements Serializable {
                 ", attrId='" + attrId + '\'' +
                 ", isEnabled='" + isEnabled + '\'' +
                 '}';
-    }
+    }*/
 
     public String getValueName() {
         return valueName;

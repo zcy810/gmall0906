@@ -49,4 +49,18 @@ public class CatalogController {
         BaseAttrInfo attrInfo = manageService.getAttrInfo(attrId);
         return attrInfo.getAttrValueList();
     }
+    @RequestMapping("saveAttrInfo")
+    @ResponseBody
+    public String saveAttrInfo(BaseAttrInfo baseAttrInfo){
+        manageService.saveAttrInfo(baseAttrInfo);
+        return  "success";
+    }
+    @RequestMapping("delAttrValueList")
+    @ResponseBody
+    public String delAttrValueList(String attrId){
+        manageService.delAttrList(attrId);
+        return "success";
+
+    }
+
 }

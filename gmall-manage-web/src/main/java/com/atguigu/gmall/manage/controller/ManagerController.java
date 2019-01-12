@@ -10,4 +10,10 @@ public class ManagerController {
     public String goIndex(){
         return "index";
     }
+
+    @RequestMapping("spuListPage")
+    public String goSupListPage(){
+        return "spuListPage";
+    }
 }
+

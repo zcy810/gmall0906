@@ -18,4 +18,8 @@ public interface ManageService {
     List<BaseAttrInfo> getAttrList(String catalog3Id);
 
     BaseAttrInfo getAttrInfo(String id);
+
+    void saveAttrInfo(BaseAttrInfo baseAttrInfo);
+
+    void delAttrList(String Id);
 }
