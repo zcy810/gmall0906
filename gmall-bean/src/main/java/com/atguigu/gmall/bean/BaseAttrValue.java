@@ -33,6 +33,7 @@ public class BaseAttrValue implements Serializable {
                 '}';
     }*/
 
+
     public String getValueName() {
         return valueName;
     }
