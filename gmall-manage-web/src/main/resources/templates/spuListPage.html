@@ -11,6 +11,8 @@
     <title>Title</title>
 </head>
 <body>
+
+
 <div class="easyui-panel" title="" data-options="border:true">
     <!-----------------列表 ----------------------------->
     <table id="spulist_dg" class="easyui-datagrid" title="spu列表"
@@ -53,23 +55,56 @@
                    $('#spulist_dg').datagrid({url:'spuList?catalog3Id='+rec.id});
                }
 " style="width:100px"></select>
-
         </div>
 
-<script language="JavaScript">
-
-function addSpuInfo() {
-
-    $("#spu_dlg").dialog("open");
-    initSpuInfoDlg();
-}
+        <div th:include="spuInfoPage"></div>
+        <div th:include="skuListPage"></div>
+        <div th:include="skuInfoPage"></div>
 
 
-</script>
 
+        <script language="JavaScript">
+
+            function addSpuInfo() {
+
+                $("#spu_dlg").dialog("open");
+                initSpuInfoDlg();
+            }
+            function addSkuInfo() {
+
+
+                var catalog3Id = $("#ctg3ForSpuList").combobox("getValue");
+                if(!catalog3Id){
+                    alert("请选择数据");
+                }else{
+                    $("#sku_dlg").dialog("open");
+                    initAttrInfoGroup(catalog3Id);
+                    var spu = $("#spulist_dg").datagrid("getSelected");
+                    initSpuSaleAttrGroup(spu.id);
+                    initSkuImgListDatagrid(spu.id);
+
+                }
+
+            }
+            function showSkuInfoList() {
+
+
+                // 传入spuid打开sku列表
+                var spuInfo = $("#spulist_dg").datagrid("getSelected");
+                if(!spuInfo){
+                    alert("请选择一个spu");
+                    return;
+                }else{
+                    $("#skulist_dlg").dialog("open");
+                    initSkuListDatagrid(spuInfo);
+                }
+
+            }
+        </script>
     </div>
+
 </div>
-<div th:include="spuInfoPage" />
+
 
 </body>
 </html>

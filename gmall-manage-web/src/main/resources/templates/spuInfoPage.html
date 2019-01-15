@@ -59,21 +59,166 @@
 
 
 <script type="text/javascript">
+    function saveSpu() {
+        var catalog3Id = $("#ctg3ForSpuList").combobox("getValue");
+        if(!catalog3Id){
+            alert("请选择数据");
+        }else{
+
+        var spuJson = {};
+        spuJson["spuName"]=$("#spuName").textbox("getValue");
+        spuJson["description"]=$("#description").textbox("getValue");
+        spuJson["catalog3Id"]=catalog3Id;
+        var spuSaleAttrRows = $("#spuSaleAttrDg").datagrid("getRows");
+        $(spuSaleAttrRows).each(function (i,saleAttrRow) {
+            var spuSaleAttrValueJson = saleAttrRow.spuSaleAttrValueJson;
+             spuJson["spuSaleAttrList["+i+"].saleAttrId"]= saleAttrRow.saleAttrId;
+             spuJson["spuSaleAttrList["+i+"].saleAttrName"]= saleAttrRow.saleAttrName;
+
+            var spuSaleAttrValueRows = saleAttrRow.spuSaleAttrValueJson.rows;
+            $(spuSaleAttrValueRows).each(function (j,spuSaleAttrValueRow) {
+                spuJson["spuSaleAttrList["+i+"].spuSaleAttrValueList["+j+"].saleAttrId"] = saleAttrRow.saleAttrId;
+                spuJson["spuSaleAttrList["+i+"].spuSaleAttrValueList["+j+"].saleAttrValueName"] = spuSaleAttrValueRow.saleAttrValueName;
+            })
+        });
+
+            var spuImgDgRows = $("#spuImgDg").datagrid("getRows");
+        $(spuImgDgRows).each(function (i,spuImgRow) {
+            spuJson["spuImageList["+i+"].imgName"]=spuImgRow.imgName;
+            spuJson["spuImageList["+i+"].imgUrl"]=spuImgRow.imgUrl;
+
+        });
+        $.post("saveSpu",spuJson,function (data) {
+            console.log(data);
+        })
+            $("#spu_dlg").dialog("close");
+        }
+    }
 
     function addSpuSaleAttr() {
         $("#spuSaleAttr_dlg").dialog("open")
         initSpuSaleAttrValueDg();
     }
     function initSpuInfoDlg() {
-
         // spu信息
 
         // spu图片列表
+        initSpuImgListDatagrid();
 
         // spu销售属性列表
-        initSpuSaleAttrDg();
+        initSpuSaleAttrListDatagrid();
 
         // spu上传控件
+        initUploader();
+
+    }
+    function initSpuImgListDatagrid() {
+
+        $("#spuImgDg").datagrid({
+            idField:'id',
+            columns:[[
+                {field:'id',title:'编号',width:100},
+                {field:'spuId',title:'spuId',width:100},
+                {field:'imgName',title:'图片名称',width:100},
+                {field:'imgUrl',title:'图片地址',width:100},
+                {field:'progress',title:'上传进度',width:150,
+                    formatter: function (value, row, index) {
+                        if (!value) {
+                            value = 0;
+                        }
+                        var htmlstr =
+                            "<div class='easyui-progressbar progressbar' style='width:100px;height:20px;' value='" + value + "' text='" + value + "'%>" +
+                            "<div class='progressbar-text'  style='width: 100px; height: 20px; line-height: 20px;'>" + value + "%</div>" +
+                            "<div class='progressbar-value' style='width:" + value + "%; height: 20px; line-height: 20px;'>" +
+                            "<div class='progressbar-text' style='width: 100px; height: 20px; line-height: 20px;'>" + value + "%</div>" +
+                            "</div>" +
+                            "</div>";
+                        return htmlstr;
+                    }
+                },
+                {field:'bbbbbbb',title:'上传状态',width:100,
+                    formatter: function (value, row, index) {
+                        if (row.imgUrl != undefined && row.imgUrl != '') {
+                            return '已上传';
+                        } else {
+                            return '等待上传';
+                        }
+                    }
+                }
+            ]],
+            view: detailview,
+            detailFormatter: function (rowIndex, rowData) {
+                return "<img src=" + rowData.imgUrl + " style='width:100px;height:100px;'>";
+            }
+        });
+    }
+    function initSpuSaleAttrListDatagrid() {
+        $("#spuSaleAttrDg").datagrid({
+            columns:[[
+                {field:'id',title:'编号',width:100},
+                {field:'spuId',title:'spuId',width:100},
+                {field:'saleAttrId',title:'销售属性id',width:100},
+                {field:'saleAttrName',title:'销售属性名称',width:100},
+                {field:'spuSaleAttrValueJson',title:'销售属性值集合',width:100}
+            ]]
+        });
+    }
+    function initUploader() {
+        var spuImgDg=  $("#spuImgDg");
+        var spuImgUploader = WebUploader.create({
+            auto:false,
+            swf: '/webuploader/Uploader.swf',
+            server: '/fileUpload',
+            pick: '#spuImgAdd',
+            resize: false,
+            fileSingleSizeLimit:2*1024*1024,
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        });
+
+
+        //当用户选择了文件以后，表格要进行增行
+        spuImgUploader.on('fileQueued',function (file) {
+            var row={
+                id:file.id,
+                imgName:file.name
+            }
+            spuImgDg.datagrid('appendRow',row);
+        });
+
+
+        spuImgUploader.on( 'uploadProgress', function( file, percentage ) {
+
+            var rowIndex=spuImgDg.datagrid('getRowIndex',file.id);
+
+            var progessRow={progress:(percentage*100).toFixed(2)};
+
+            spuImgDg.datagrid('updateRow', {index:rowIndex,row:progessRow});
+        });
+
+
+        // 上传成功时，要把生成的图片路径返回给表格的行中的url
+        spuImgUploader.on( 'uploadSuccess', function( file ,response) {
+            var fileId=file.id;
+            var rowIndex = spuImgDg.datagrid('getRowIndex',file.id);//通过file.id查询到行号
+            spuImgDg.datagrid('updateRow',
+                {   index:rowIndex,
+                    row:{imgUrl:response._raw}//fdfs的上传路径
+                });
+        });
+
+
+        $('#spuImgUploadBtn').click(function(){
+
+            if(spuImgUploader.getFiles().length<=0){
+                $.messager().alert('警告','没有需要上传的文件','warning');
+                return;
+            }
+            spuImgUploader.upload();
+        });
 
     }
     function initSpuSaleAttrDg() {
@@ -82,7 +227,9 @@
                 {field:'id',title:'id',width:100},
                 {field:'spuId',title:'spuId',width:100},
                 {field:'saleAttrid',title:'销售属性id',width:100},
-                {field:'saleAttrName',title:'销售属性Name',width:100}
+                {field:'saleAttrName',title:'销售属性Name',width:100},
+                {field:'spuSaleAttrValueJson',title:'销售属性值集合',width:100}
+
             ]]
         })
     }

@@ -8,6 +8,7 @@ import javafx.scene.media.SubtitleTrack;
 import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,7 +49,15 @@ public class ManageServiceImpl implements ManageService {
     public List<BaseAttrInfo> getAttrList(String catalog3Id) {
         BaseAttrInfo baseAttrInfo = new BaseAttrInfo();
         baseAttrInfo.setCatalog3Id(catalog3Id);
-        return baseAttrInfoMapper.select(baseAttrInfo);
+        List<BaseAttrInfo> baseAttrInfos = baseAttrInfoMapper.select(baseAttrInfo);
+        for (BaseAttrInfo attrInfo:baseAttrInfos) {
+            BaseAttrValue baseAttrValue = new BaseAttrValue();
+
+          baseAttrValue.setAttrId(attrInfo.getId());
+            List<BaseAttrValue> values = baseAttrValueMapper.select(baseAttrValue);
+            attrInfo.setAttrValueList(values);
+        }
+        return baseAttrInfos;
     }
 
     @Override

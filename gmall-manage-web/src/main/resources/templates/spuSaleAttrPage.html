@@ -92,6 +92,21 @@
         $("#spuSaleAttrValueDg").datagrid('deleteRow', rowIndex);
 
     }
+    function saveSpuSaleAttr() {
+        var saleAttrId = $("#saleAttrSelect").combobox("getValue");
+        var saleAttrName = $("#saleAttrSelect").combobox("getText");
+
+        var spuSaleAttrValueJson = $("#spuSaleAttrValueDg").datagrid("getData")
+
+
+        $("#spuSaleAttrDg").datagrid('appendRow',{
+            saleAttrId:saleAttrId,
+            saleAttrName:saleAttrName,
+            spuSaleAttrValueJson:spuSaleAttrValueJson
+        });
+        $("#spuSaleAttr_dlg").dialog("close");
+
+    }
 
 </script>
 
