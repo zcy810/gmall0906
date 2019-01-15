@@ -89,7 +89,7 @@ function initSpuSaleAttrGroup(spuId) {
             var selectedEnd = "</select>";
             var options  = "";
             $(spuSaleAttrValueList).each(function (j,spuSaleAttrValue) {
-                var optionBegin = "<option value='"+spuSaleAttrValue.Id+"'>"
+                var optionBegin = "<option value='"+spuSaleAttrValue.id+"'>"
                 var saleAttrValueName = spuSaleAttrValue.saleAttrValueName;
                 var optionEnd = "</option>"
                 options = options + optionBegin + saleAttrValueName + optionEnd;
@@ -125,6 +125,18 @@ function initSkuImgListDatagrid(spuId) {
 }
 function saveSku() {
     var skuJson = {};
+    var spu = $("#spulist_dg").datagrid("getSelected");
+    skuJson["spuId"] = spu.id;
+    skuJson["price"] = $("#price").numberbox("getValue");
+    skuJson["skuName"] =$("#skuName").textbox("getValue") ;
+    skuJson["weight"] = $("#weight").textbox("getValue");
+    skuJson["skuDesc"] = $("#skuDesc").textbox("getValue");
+    var catalog3Id = $("#ctg3ForSpuList").combobox("getValue");
+    if(!catalog3Id){
+        catalog3Id = '61';
+    }
+    skuJson["catalog3Id"] = catalog3Id;
+
     var spans = $("#attrInfoGroup").children("span");
     $(spans).each(function (i,attr) {
         var attrId = $(attr).attr("attrId");
@@ -142,16 +154,28 @@ function saveSku() {
         skuJson["skuSaleAttrValueList["+i+"].saleAttrValueName"]= spuSaleAttrValueName;
     });
     var skuImgs = $("#skuImgDg").datagrid("getChecked");
-    var defaultImg = skuImgs[0].imgUrl;
-    var chkDefaultImg  = $("input[name='isDefault']:checked").val();
-    if(chkDefaultImg == undefined){
+    var defaultImg = $(skuImgs)[0].imgUrl;
+    var chkDefaultImg  =  $("input[name='isDefault']:checked").val();
+
+
+    if(!chkDefaultImg){
         chkDefaultImg = defaultImg;
     }
-    var spans = $("#skuImgDg").
-    alert(chkDefaultImg);
-    /*$.post("saveSku",skuJson,function (data) {
+
+    skuJson["skuDefaultImg"]=chkDefaultImg;
+    $(skuImgs).each(function (i,skuImg) {
+        skuJson["skuImageList["+i+"].imgName"]=skuImg.imgName;
+        skuJson["skuImageList["+i+"].imgUrl"]=skuImg.imgUrl;
+        skuJson["skuImageList["+i+"].spuImgId"]=skuImg.id;
+        if(skuImg.imgUrl == chkDefaultImg){
+        skuJson["skuImageList["+i+"].isDefault"]="1";
+        }
+    })
+
+    $.post("saveSku",skuJson,function (data) {
         alert(data);
-    })*/
+        $("#sku_dlg").dialog("close");
+    })
 
 }
 

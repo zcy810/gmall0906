@@ -68,6 +68,7 @@ public class SpuServiceImpl implements SpuService {
         for (SpuSaleAttr saleAttr : saleAttrs) {
             SpuSaleAttrValue spuSaleAttrValue = new SpuSaleAttrValue();
             spuSaleAttrValue.setSpuId(spuId);
+            spuSaleAttrValue.setSaleAttrId(saleAttr.getSaleAttrId());
             List<SpuSaleAttrValue> values = spuSaleAttrValueMapper.select(spuSaleAttrValue);
             saleAttr.setSpuSaleAttrValueList(values);
         }
@@ -81,5 +82,11 @@ public class SpuServiceImpl implements SpuService {
         spuImage.setSpuId(spuId);
         List<SpuImage> list = spuImageMapper.select(spuImage);
         return list;
+    }
+
+    @Override
+    public List<SpuSaleAttr> getSpuSaleAttrListCheckBySku(String spuId, String skuId) {
+        List<SpuSaleAttr>  spuSaleAttrs = spuSaleAttrMapper.selectSpuSaleAttrListCheckBySku(spuId,skuId);
+        return spuSaleAttrs;
     }
 }

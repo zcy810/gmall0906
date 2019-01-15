@@ -3,7 +3,6 @@ package com.atguigu.gmall.manage.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.atguigu.gmall.bean.SkuInfo;
 import com.atguigu.service.SkuService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,7 +23,7 @@ public class SkuController {
     @RequestMapping("saveSku")
     @ResponseBody
     public String saveSku(SkuInfo skuInfo){
-
+        skuService.setSkuInfo(skuInfo);
         return "success";
     }
 }

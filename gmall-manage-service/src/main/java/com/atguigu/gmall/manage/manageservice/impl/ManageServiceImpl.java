@@ -112,4 +112,6 @@ public class ManageServiceImpl implements ManageService {
         baseAttrValue.setAttrId(Id);
         baseAttrValueMapper.delete(baseAttrValue);
     }
+
+
 }
