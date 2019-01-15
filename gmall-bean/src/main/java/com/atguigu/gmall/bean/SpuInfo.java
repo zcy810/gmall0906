@@ -1,13 +1,44 @@
 package com.atguigu.gmall.bean;
 
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 public class SpuInfo implements Serializable{
+    @Column
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+
+    @Column
     private String spuName;
+
+    @Column
     private String description;
-    private String catalog3Id;
-    private String tmId;
+
+    @Column
+    private  String catalog3Id;
+
+    @Transient
+    private List<SpuSaleAttr> spuSaleAttrList;
+    @Transient
+    private List<SpuImage> spuImageList;
+
+    public List<SpuSaleAttr> getSpuSaleAttrList() {
+        return spuSaleAttrList;
+    }
+
+    public void setSpuSaleAttrList(List<SpuSaleAttr> spuSaleAttrList) {
+        this.spuSaleAttrList = spuSaleAttrList;
+    }
+
+    public List<SpuImage> getSpuImageList() {
+        return spuImageList;
+    }
+
+    public void setSpuImageList(List<SpuImage> spuImageList) {
+        this.spuImageList = spuImageList;
+    }
 
     public String getId() {
         return id;
@@ -41,13 +72,7 @@ public class SpuInfo implements Serializable{
         this.catalog3Id = catalog3Id;
     }
 
-    public String getTmId() {
-        return tmId;
-    }
 
-    public void setTmId(String tmId) {
-        this.tmId = tmId;
-    }
 
     public SpuInfo(String id, String spuName, String description, String catalog3Id, String tmId) {
 
@@ -55,7 +80,6 @@ public class SpuInfo implements Serializable{
         this.spuName = spuName;
         this.description = description;
         this.catalog3Id = catalog3Id;
-        this.tmId = tmId;
     }
 
     public SpuInfo() {
