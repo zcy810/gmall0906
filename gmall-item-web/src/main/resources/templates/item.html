@@ -10,6 +10,7 @@
 		<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css"/>
 	</head>
 	<body>
+	<input type="text" th:value="${skuMap}" id="skuInfo" style="width: 300px"></input>
 		<div id="max">
 		<header>
 
@@ -281,7 +282,7 @@
 									</div>
 								</form>
 							</div>
-							<div id="cartBtn"  style="cursor:pointer;"  canClick="1"  onclick="addToCart(this)" class="box-btns-two">
+							<div id="cartBtn"  style="cursor:pointer;"   canClick="1"  onclick="addToCart(this)" class="box-btns-two">
 
 								放入购物车
 
@@ -1020,35 +1021,27 @@
         }
 
         function switchSkuId() {
-            // 被选中属性
-            var checkDivs = $(".redborder div");
-            var valueIds="";
-            // 拼接成属性值串
-            for (var i = 0; i < checkDivs.length; i++) {
-                var saleAttrValueDiv = checkDivs.eq(i);
-                if(i>0){
-                    valueIds= valueIds+"|";
-                }
-                valueIds=valueIds+saleAttrValueDiv.attr("value");
-            }
-            //页面上的hashjson
-            var valuesSku = $("#valuesSku").attr("value");
-            var valuesSkuJson=JSON.parse(valuesSku);
-
-            // 看看hash有没有
-            var skuId= valuesSkuJson[valueIds];
-            // 当前sku
-            var skuIdSelf=$("#skuId").val();
+       var checkDivs = $(".redborder div");
+		//alert(checkDivs);
+			var k ="";
+			$(checkDivs).each(function (i,checkDiv) {
+				var valueId = $(checkDiv).attr("value");
+				k = k + "|" +valueId
+            })
+		var mapJson = $("#skuInfo").val();
+			var mapString = JSON.parse(mapJson);
+			var skuId = mapString[k];
 
             // 判断是否跳转
             if(skuId){
-                if(skuId==skuIdSelf){
+                if(!skuId){
                     $("#cartBtn").attr("class","box-btns-two");
                 }else{
                     window.location.href="/"+skuId+".html";
                 }
             }else{
                 $("#cartBtn").attr("class","box-btns-two-off");
+                $("#cartBtn").attr("onclick","");
             }
         }
 	</script>

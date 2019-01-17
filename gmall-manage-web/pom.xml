@@ -30,6 +30,7 @@
 			<artifactId>fastdfs-client-java</artifactId>
 			<version>1.27-SNAPSHOT</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.atguigu.gmall</groupId>
 			<artifactId>gmall-bean</artifactId>

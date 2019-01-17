@@ -9,5 +9,7 @@ public interface SkuService {
 
     void setSkuInfo(SkuInfo skuInfo);
 
-    SkuInfo getSkuInfo(String skuId);
+    SkuInfo getSkuInfo(String skuId,String ip);
+
+    List<SkuInfo> getSkuSaleAttrValueListBySpu(String spuId);
 }
