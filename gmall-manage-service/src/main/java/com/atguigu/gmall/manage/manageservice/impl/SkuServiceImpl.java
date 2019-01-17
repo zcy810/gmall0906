@@ -1,12 +1,10 @@
 package com.atguigu.gmall.manage.manageservice.impl;
 
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
-import com.atguigu.gmall.bean.SkuAttrValue;
-import com.atguigu.gmall.bean.SkuImage;
-import com.atguigu.gmall.bean.SkuInfo;
-import com.atguigu.gmall.bean.SkuSaleAttrValue;
+import com.atguigu.gmall.bean.*;
 import com.atguigu.gmall.manage.mapper.SkuAttrValueMapper;
 import com.atguigu.gmall.manage.mapper.SkuImageMapper;
 import com.atguigu.gmall.manage.mapper.SkuInfoMapper;
@@ -15,6 +13,7 @@ import com.atguigu.gmall.util.RedisUtil;
 import com.atguigu.service.SkuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
+
 
 import java.util.List;
 @Service
@@ -62,16 +61,38 @@ public class SkuServiceImpl implements SkuService {
 
     @Override
     public SkuInfo getSkuInfo(String skuId, String ip) {
+        //ip是用来看使用者ip的,暂时没有必要
         SkuInfo skuInfo = null;
         Jedis jedis = redisUtil.getJedis();
-        String str = jedis.get("sku:" + skuId + ":info");
+        String str = jedis.get(EntitySku.SKU_PREFIX + skuId + EntitySku.SKU_SUFFIX);
         skuInfo = JSON.parseObject(str, SkuInfo.class);
 
         if(skuInfo == null){
-            System.out.println("我这是从数据库中查的哦!!!");
-            skuInfo =getSkuInfoFromDb(skuId);
-            jedis.set("sku:" + skuId + ":info",JSON.toJSONString(skuInfo));
+
+            String Flag = jedis.set(EntitySku.SKU_PREFIX + skuId + EntitySku.SKU_SUFFIX_LOCK, "2", "nx", "px", 5000);
+
+            if(StringUtils.isBlank(Flag)){
+                System.out.println("没拿到锁,3s后开始自旋");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return getSkuInfo(skuId,ip);
+            }else {
+                System.out.println("我这是从数据库中查的哦!!!");
+                skuInfo =getSkuInfoFromDb(skuId);
+            }
+            //拿到数据为了体验自旋,让查到的数据睡一会
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            jedis.del(EntitySku.SKU_PREFIX + skuId + EntitySku.SKU_SUFFIX_LOCK);
+            jedis.set(EntitySku.SKU_PREFIX + skuId + EntitySku.SKU_SUFFIX,JSON.toJSONString(skuInfo));
         }
+
         jedis.close();
 
         return skuInfo;
