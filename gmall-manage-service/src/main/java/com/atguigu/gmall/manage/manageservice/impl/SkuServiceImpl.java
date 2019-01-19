@@ -117,4 +117,12 @@ public class SkuServiceImpl implements SkuService {
     public List<SkuInfo> getSkuSaleAttrValueListBySpu(String spuId) {
         return skuSaleAttrValueMapper.selectSkuSaleAttrValueListBySpu(spuId);
     }
+
+    @Override
+    public List<SkuInfo> getSkuListByCatalog3Id(String s) {
+        SkuInfo skuInfo = new SkuInfo();
+        skuInfo.setCatalog3Id(s);
+        List<SkuInfo> select = skuInfoMapper.select(skuInfo);
+        return select;
+    }
 }
