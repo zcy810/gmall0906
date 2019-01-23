@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div th:text="${reComment.userName}+ ':'"></div>
+    <div th:text="${reComment.depict}"></div>
+<hr/>
+    <h3>回复:</h3>
+
+    <div th:each=" str: ${reReplyList}">
+        <div th:text="${str.userName}+ ':'"></div>
+        <div th:text="${str.depict}"></div>
+        <hr/>
+    </div>
+
+</body>
+</html>

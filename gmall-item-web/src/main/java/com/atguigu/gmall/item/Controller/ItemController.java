@@ -2,14 +2,8 @@ package com.atguigu.gmall.item.Controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
-import com.atguigu.gmall.bean.ReComment;
-import com.atguigu.gmall.bean.SkuInfo;
-import com.atguigu.gmall.bean.SkuSaleAttrValue;
-import com.atguigu.gmall.bean.SpuSaleAttr;
-import com.atguigu.service.ReService;
-import com.atguigu.service.SkuService;
-import com.atguigu.service.SpuService;
-import com.atguigu.service.UserService;
+import com.atguigu.gmall.bean.*;
+import com.atguigu.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +29,7 @@ public class ItemController {
     @Reference
     private UserService userService;
 
+
    /* @RequestMapping("getComList")
     public List<ReComment> getComList(String skuId, Model model,HttpServletRequest request){
         List<ReComment> reList = reService.getAllList(skuId);
@@ -43,6 +38,16 @@ public class ItemController {
         return reList;
 
     }*/
+
+   @RequestMapping("getApply/{commentId}")
+   public String goApply(@PathVariable("commentId") String commentId,HttpServletRequest request){
+        ReComment reComment = reService.getReCommentById(commentId);
+        //reComment为null!!!
+        List<ReReply> reReplyList = reService.getReRpplyByCommentId(commentId);
+        request.setAttribute("reComment",reComment);
+        request.setAttribute("reReplyList",reReplyList);
+       return "reReply";
+   }
 
 
     @RequestMapping("/{skuId}.html")

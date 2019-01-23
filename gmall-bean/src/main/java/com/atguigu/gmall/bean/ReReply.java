@@ -1,19 +1,34 @@
 package com.atguigu.gmall.bean;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import java.io.Serializable;
 
 public class ReReply implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private String id;
+    @Column
     private String commentId;
+    @Column
     private String reId;
+    @Column
     private String userId;
+    @Column
     private String depict;
-
+    @Column
+    private String userName;
     public String getId() {
         return id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public void setId(String id) {

@@ -997,6 +997,7 @@
 								<div th:each=" str: ${reList}">
 									<div th:text="${str.userName}+ ':'"></div>
 								<div th:text="${str.depict}"></div>
+									<a th:href="@{/getApply/{commetId}(commetId=${str.id})}"target="_Blank">显示回复</a>
 											<hr />
 								</div>
 

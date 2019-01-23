@@ -5,10 +5,7 @@ import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.bean.*;
-import com.atguigu.gmall.manage.mapper.SkuAttrValueMapper;
-import com.atguigu.gmall.manage.mapper.SkuImageMapper;
-import com.atguigu.gmall.manage.mapper.SkuInfoMapper;
-import com.atguigu.gmall.manage.mapper.SkuSaleAttrValueMapper;
+import com.atguigu.gmall.manage.mapper.*;
 import com.atguigu.gmall.util.RedisUtil;
 import com.atguigu.service.SkuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,7 @@ public class SkuServiceImpl implements SkuService {
     private SkuSaleAttrValueMapper skuSaleAttrValueMapper;
     @Autowired
     private RedisUtil redisUtil;
+
 
     @Override
     public List<SkuInfo> selectAll() {
@@ -134,11 +132,13 @@ public class SkuServiceImpl implements SkuService {
         return skuInfos;
     }
 
-    @Override
-    public SkuInfo getSkuBySkuId(String skuId) {
+            @Override
+            public SkuInfo getSkuBySkuId(String skuId) {
 
 
-        return   skuInfoMapper.selectByPrimaryKey(skuId);
-    }
+                return   skuInfoMapper.selectByPrimaryKey(skuId);
+            }
+
+
 
 }
