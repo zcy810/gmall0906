@@ -1,5 +1,6 @@
 package com.atguigu.service;
 
+import com.atguigu.gmall.bean.CartInfo;
 import com.atguigu.gmall.bean.SkuInfo;
 
 import java.util.List;
@@ -16,4 +17,5 @@ public interface SkuService {
     List<SkuInfo> getSkuListByCatalog3Id(String s);
 
     SkuInfo getSkuBySkuId(String skuId);
+
 }

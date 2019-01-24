@@ -2,6 +2,7 @@ package com.atguigu.gmall.cart.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.atguigu.gmall.annotation.LoginRequired;
 import com.atguigu.gmall.bean.CartInfo;
 import com.atguigu.gmall.bean.SkuInfo;
 import com.atguigu.gmall.util.CookieUtil;
@@ -26,15 +27,24 @@ public class CatrController {
     CartService cartService;
 
 
+
+@RequestMapping("toTrade")
+@LoginRequired(isNeedLogin = true)
+public String toTrade(HttpServletRequest request){
+    String userId = (String)request.getAttribute("userId");
+    System.out.println(userId);
+    return "trade";
+}
+
     @RequestMapping("updataNumCart")
     public String updataNumCart(CartInfo cartInfo){
         System.out.println(cartInfo);
         return "";
     }
-
+    @LoginRequired(isNeedLogin = false)
 @RequestMapping("checkCart")
 public String checkCart(HttpServletRequest request,CartInfo cartInfo,HttpServletResponse response){
-    String userId = "2";
+    String userId = (String)request.getAttribute("userId");
     List<CartInfo> cartInfos = new ArrayList<>();
     if(StringUtils.isNotBlank(userId)){
          cartInfos = cartService.cartListFromCache(userId);
@@ -60,10 +70,10 @@ public String checkCart(HttpServletRequest request,CartInfo cartInfo,HttpServlet
     return "cartListInner";
 }
 
-
+    @LoginRequired(isNeedLogin = false)
     @RequestMapping("cartList")
     public String goCartList(HttpServletRequest request){
-        String userId = "2";
+        String userId = (String)request.getAttribute("userId");;
         List<CartInfo> cartInfos = new ArrayList<>();
         if(StringUtils.isNotBlank(userId)){
              cartInfos = cartService.cartListFromCache(userId);
@@ -88,10 +98,10 @@ public String checkCart(HttpServletRequest request,CartInfo cartInfo,HttpServlet
         }
         return total;
     }
-
+    @LoginRequired(isNeedLogin = false)
     @RequestMapping("addToCart")
     public String goCart(HttpServletRequest request, HttpServletResponse response, String skuId, int num) {
-        String userId = "2";
+        String userId = (String)request.getAttribute("userId");
         SkuInfo skuInfo =skuService.getSkuBySkuId(skuId);
         CartInfo cartInfo = new CartInfo();
         cartInfo.setSkuId(skuId);

@@ -1,11 +1,9 @@
 package com.atguigu.gmall.user.mapper;
 
-import com.atguigu.gmall.bean.UserAdd;
+import com.atguigu.gmall.bean.UserAddress;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.List;
 
+public interface UserAddMapper extends Mapper<UserAddress> {
 
-public interface UserAddMapper extends Mapper<UserAdd> {
-    List<UserAdd> selectIdByAdd(Integer id);
 }

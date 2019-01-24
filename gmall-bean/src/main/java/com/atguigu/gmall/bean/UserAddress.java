@@ -1,14 +1,27 @@
 package com.atguigu.gmall.bean;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
 
-public class UserAdd implements Serializable {
+/**
+ * @param
+ * @return
+ */
+public class UserAddress implements Serializable {
+    @Column
+    @Id
     private String id;
+    @Column
     private String userAddress;
+    @Column
     private String userId;
+    @Column
     private String consignee;
+    @Column
     private String phoneNum;
-    private Boolean isDefault;
+    @Column
+    private String isDefault;
 
     public String getId() {
         return id;
@@ -50,35 +63,11 @@ public class UserAdd implements Serializable {
         this.phoneNum = phoneNum;
     }
 
-    public Boolean getDefault() {
+    public String getIsDefault() {
         return isDefault;
     }
 
-    public void setDefault(Boolean aDefault) {
-        isDefault = aDefault;
-    }
-
-    public UserAdd() {
-    }
-
-    public UserAdd(String id, String userAddress, String userId, String consignee, String phoneNum, Boolean isDefault) {
-        this.id = id;
-        this.userAddress = userAddress;
-        this.userId = userId;
-        this.consignee = consignee;
-        this.phoneNum = phoneNum;
+    public void setIsDefault(String isDefault) {
         this.isDefault = isDefault;
-    }
-
-    @Override
-    public String toString() {
-        return "UserAdd{" +
-                "id='" + id + '\'' +
-                ", userAddress='" + userAddress + '\'' +
-                ", userId='" + userId + '\'' +
-                ", consignee='" + consignee + '\'' +
-                ", phoneNum='" + phoneNum + '\'' +
-                ", isDefault=" + isDefault +
-                '}';
     }
 }
