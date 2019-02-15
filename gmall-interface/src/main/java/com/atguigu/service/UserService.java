@@ -20,4 +20,6 @@ public interface UserService {
     UserInfo login(UserInfo userInfo);
 
     void addUserCache(UserInfo userInfofromDB);
+
+    UserAddress getAddressById(String deliveryAddressId);
 }

@@ -139,6 +139,10 @@ public class SkuServiceImpl implements SkuService {
                 return   skuInfoMapper.selectByPrimaryKey(skuId);
             }
 
+    @Override
+    public SkuInfo getSkuById(String skuId) {
+        return skuInfoMapper.selectByPrimaryKey(skuId);
+    }
 
 
 }

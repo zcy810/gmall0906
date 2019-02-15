@@ -63,12 +63,15 @@ public class UserServiceImpl implements UserService {
             info.setPasswd(userInfo.getPasswd());
             userLogin = userMapper.selectOne(info);
         }
-        String id = userLogin.getId();
 
-        UserAddress userAdd = new UserAddress();
-        userAdd.setUserId(id);
-        List<UserAddress> select = userAddMapper.select(userAdd);
-        userLogin.setUserAddressList(select);
+        if (userLogin != null) {
+            String id = userLogin.getId();
+
+            UserAddress userAdd = new UserAddress();
+            userAdd.setUserId(id);
+            List<UserAddress> select = userAddMapper.select(userAdd);
+            userLogin.setUserAddressList(select);
+        }
         return userLogin;
     }
 
@@ -77,5 +80,14 @@ public class UserServiceImpl implements UserService {
         Jedis jedis = redisUtil.getJedis();
         jedis.setex(EntitySku.USER_PREFIX + userInfofromDB.getId() + EntitySku.SKU_SUFFIX,60*60*24, JSON.toJSONString(userInfofromDB));
         jedis.close();
+    }
+
+    @Override
+    public UserAddress getAddressById(String deliveryAddressId) {
+        UserAddress userAddress = new UserAddress();
+        userAddress.setId(deliveryAddressId);
+        UserAddress userAddress1 = userAddMapper.selectOne(userAddress);
+
+        return userAddress1;
     }
 }

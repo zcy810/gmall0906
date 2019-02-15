@@ -18,4 +18,5 @@ public interface SkuService {
 
     SkuInfo getSkuBySkuId(String skuId);
 
+    SkuInfo getSkuById(String skuId);
 }

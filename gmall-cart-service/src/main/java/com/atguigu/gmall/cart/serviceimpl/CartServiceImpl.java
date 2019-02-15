@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import tk.mybatis.mapper.entity.Example;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +31,7 @@ public class CartServiceImpl implements CartService {
     public void flushCartCacheByUser(String userId) {
        List<CartInfo> cartInfos = getCartInfoByUserId(userId);
         Jedis jedis = redisUtil.getJedis();
-        if(cartInfos != null){
+        if(cartInfos != null && cartInfos.size() > 0 ){
             HashMap<String,String> hashMap = new HashMap<>();
             for (CartInfo cartInfo : cartInfos) {
                 hashMap.put(cartInfo.getId(),JSON.toJSONString(cartInfo));
@@ -73,5 +74,48 @@ public class CartServiceImpl implements CartService {
         cartInfoMapper.updateByExampleSelective(info,example);
     }
 
+    @Override
+    public void mergCart(String userId, String listCartCookie) {
+        List<CartInfo> cartInfosFromDb = getCartInfoByUserId(userId);
 
+        List<CartInfo> cartInfosFromCookie = JSON.parseArray(listCartCookie, CartInfo.class);
+
+        for (CartInfo cartInfoFromCookie : cartInfosFromCookie) {
+            boolean b = if_new_cart(cartInfosFromDb, cartInfoFromCookie);// cookie中的数据是否在db中存在
+
+            if(b){
+                // 插入
+                cartInfoFromCookie.setUserId(userId);
+                cartInfoMapper.insertSelective(cartInfoFromCookie);
+            }else{
+                // 更新
+                for (CartInfo cartInfo : cartInfosFromDb) {
+                    if(cartInfo.getSkuId().equals(cartInfoFromCookie.getSkuId())){
+                        cartInfo.setSkuNum(cartInfo.getSkuNum()+cartInfoFromCookie.getSkuNum());
+                        cartInfo.setCartPrice(cartInfo.getSkuPrice().multiply(new BigDecimal(cartInfo.getSkuNum())));
+                        cartInfoMapper.updateByPrimaryKeySelective(cartInfo);
+                    }
+                }
+            }
+        }
+
+        // 同步缓存
+        flushCartCacheByUser(userId);
+    }
+    private boolean if_new_cart(List<CartInfo> cartInfos, CartInfo cartInfo) {
+        boolean b = true;
+
+        for (CartInfo info : cartInfos) {
+            String skuId = info.getSkuId();
+
+            if (skuId.equals(cartInfo.getSkuId())) {
+                b = false;
+            }
+        }
+
+        return b;
+    }
 }
+
+
+

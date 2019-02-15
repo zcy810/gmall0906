@@ -15,4 +15,6 @@ public interface CartService {
     List<CartInfo> cartListFromCache(String userId);
 
     void updateCart(CartInfo info);
+
+    void mergCart(String userId, String listCartCookie);
 }

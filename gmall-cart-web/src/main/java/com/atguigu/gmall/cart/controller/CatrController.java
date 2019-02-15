@@ -28,81 +28,77 @@ public class CatrController {
 
 
 
-@RequestMapping("toTrade")
-@LoginRequired(isNeedLogin = true)
-public String toTrade(HttpServletRequest request){
-    String userId = (String)request.getAttribute("userId");
-    System.out.println(userId);
-    return "trade";
-}
 
     @RequestMapping("updataNumCart")
-    public String updataNumCart(CartInfo cartInfo){
+    public String updataNumCart(CartInfo cartInfo) {
         System.out.println(cartInfo);
         return "";
     }
+
     @LoginRequired(isNeedLogin = false)
-@RequestMapping("checkCart")
-public String checkCart(HttpServletRequest request,CartInfo cartInfo,HttpServletResponse response){
-    String userId = (String)request.getAttribute("userId");
-    List<CartInfo> cartInfos = new ArrayList<>();
-    if(StringUtils.isNotBlank(userId)){
-         cartInfos = cartService.cartListFromCache(userId);
-    }else {
-        String listCartCookie = CookieUtil.getCookieValue(request, "listCartCookie", true);
+    @RequestMapping("checkCart")
+    public String checkCart(HttpServletRequest request, CartInfo cartInfo, HttpServletResponse response) {
+        String userId = (String) request.getAttribute("userId");
+        List<CartInfo> cartInfos = new ArrayList<>();
+        if (StringUtils.isNotBlank(userId)) {
+            cartInfos = cartService.cartListFromCache(userId);
+        } else {
+            String listCartCookie = CookieUtil.getCookieValue(request, "listCartCookie", true);
             cartInfos = JSON.parseArray(listCartCookie, CartInfo.class);
-    }
-    for (CartInfo Info : cartInfos) {
-        if(cartInfo.getSkuId().equals(Info.getSkuId())){
-            Info.setIsChecked(cartInfo.getIsChecked());
-            if(StringUtils.isNotBlank(userId)){
-                cartService.updateCart(Info);
-                cartService.flushCartCacheByUser(userId);
-            }else {
-                CookieUtil.setCookie(request,response,"listCartCookie",JSON.toJSONString(cartInfos),1000*60*60*24,true);
+        }
+        for (CartInfo Info : cartInfos) {
+            if (cartInfo.getSkuId().equals(Info.getSkuId())) {
+                Info.setIsChecked(cartInfo.getIsChecked());
+                if (StringUtils.isNotBlank(userId)) {
+                    cartService.updateCart(Info);
+                    cartService.flushCartCacheByUser(userId);
+                } else {
+                    CookieUtil.setCookie(request, response, "listCartCookie", JSON.toJSONString(cartInfos),60 * 60 * 24, true);
+                }
             }
         }
-    }
-    request.setAttribute("cartList",cartInfos);
-    BigDecimal totalPrice = getTotalPrice(cartInfos);
-    request.setAttribute("totalPrice",totalPrice);
+        request.setAttribute("cartList", cartInfos);
+        BigDecimal totalPrice = getTotalPrice(cartInfos);
+        request.setAttribute("totalPrice", totalPrice);
 
-    return "cartListInner";
-}
+        return "cartListInner";
+    }
 
     @LoginRequired(isNeedLogin = false)
     @RequestMapping("cartList")
-    public String goCartList(HttpServletRequest request){
-        String userId = (String)request.getAttribute("userId");;
+    public String goCartList(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        ;
         List<CartInfo> cartInfos = new ArrayList<>();
-        if(StringUtils.isNotBlank(userId)){
-             cartInfos = cartService.cartListFromCache(userId);
-        }else {
+        if (StringUtils.isNotBlank(userId)) {
+            cartInfos = cartService.cartListFromCache(userId);
+        } else {
             String listCartCookie = CookieUtil.getCookieValue(request, "listCartCookie", true);
-            if(StringUtils.isNotBlank(listCartCookie)){
+            if (StringUtils.isNotBlank(listCartCookie)) {
                 cartInfos = JSON.parseArray(listCartCookie, CartInfo.class);
             }
         }
-        request.setAttribute("cartList",cartInfos);
+        request.setAttribute("cartList", cartInfos);
         BigDecimal totalPrice = getTotalPrice(cartInfos);
-        request.setAttribute("totalPrice",totalPrice);
+        request.setAttribute("totalPrice", totalPrice);
         return "cartList";
     }
 
     private BigDecimal getTotalPrice(List<CartInfo> cartInfos) {
         BigDecimal total = new BigDecimal("0");
         for (CartInfo cartInfo : cartInfos) {
-            if (cartInfo.getIsChecked().equals("1")){
-                total=total.add(cartInfo.getCartPrice());
+            if (cartInfo.getIsChecked().equals("1")) {
+                total = total.add(cartInfo.getCartPrice());
             }
         }
         return total;
     }
+
     @LoginRequired(isNeedLogin = false)
     @RequestMapping("addToCart")
     public String goCart(HttpServletRequest request, HttpServletResponse response, String skuId, int num) {
-        String userId = (String)request.getAttribute("userId");
-        SkuInfo skuInfo =skuService.getSkuBySkuId(skuId);
+        String userId = (String) request.getAttribute("userId");
+        SkuInfo skuInfo = skuService.getSkuBySkuId(skuId);
         CartInfo cartInfo = new CartInfo();
         cartInfo.setSkuId(skuId);
         cartInfo.setSkuPrice(skuInfo.getPrice());
@@ -120,33 +116,32 @@ public String checkCart(HttpServletRequest request,CartInfo cartInfo,HttpServlet
             if (StringUtils.isBlank(listCartCookie)) {
                 cartInfoList = new ArrayList<>();
                 cartInfoList.add(cartInfo);
-            }else{
-                boolean isNewCart = is_new(cartInfo,cartInfoList);
-                if(isNewCart){
+            } else {
+                boolean isNewCart = is_new(cartInfo, cartInfoList);
+                if (isNewCart) {
                     cartInfoList.add(cartInfo);
-                }else {
+                } else {
                     for (CartInfo info : cartInfoList) {
-                        info.setSkuNum(cartInfo.getSkuNum()+info.getSkuNum());
+                        info.setSkuNum(cartInfo.getSkuNum() + info.getSkuNum());
                         info.setSkuPrice(info.getSkuPrice().multiply(new BigDecimal(info.getSkuNum())));
                     }
                 }
             }
-            CookieUtil.setCookie(request,response,"listCartCookie",JSON.toJSONString(cartInfoList),1000*60*60*24,true);
-        }else{
+            CookieUtil.setCookie(request, response, "listCartCookie", JSON.toJSONString(cartInfoList),  60 * 60 * 24, true);
+        } else {
             CartInfo exists = new CartInfo();
             exists.setUserId(userId);
             exists.setSkuId(skuId);
             CartInfo cartInfoIfExist = cartService.exists(exists);
 
-            if(cartInfoIfExist == null){
+            if (cartInfoIfExist == null) {
                 cartService.saveCart(cartInfo);
-            }else{
+            } else {
                 cartInfoIfExist.setSkuNum(cartInfo.getSkuNum() + cartInfoIfExist.getSkuNum());
                 cartInfoIfExist.setCartPrice(cartInfoIfExist.getSkuPrice().multiply(new BigDecimal(cartInfoIfExist.getSkuNum())));
             }
             cartService.flushCartCacheByUser(userId);
         }
-
 
 
         return "redirect:http://cart.gmall.com:8086/success.html";
@@ -156,7 +151,7 @@ public String checkCart(HttpServletRequest request,CartInfo cartInfo,HttpServlet
         boolean isNewCatr = true;
         for (CartInfo info : cartInfoList) {
             String skuId = info.getSkuId();
-            if(skuId.equals(cartInfo.getSkuId())){
+            if (skuId.equals(cartInfo.getSkuId())) {
                 return false;
             }
         }
