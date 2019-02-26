@@ -3,7 +3,7 @@ package com.atguigu.gmall.manage.manageservice.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.atguigu.gmall.bean.*;
 import com.atguigu.gmall.manage.mapper.*;
-import com.atguigu.service.SpuService;
+import com.atguigu.gmall.service.SpuService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

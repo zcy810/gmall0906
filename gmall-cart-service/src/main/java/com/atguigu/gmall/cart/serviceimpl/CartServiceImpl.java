@@ -6,7 +6,7 @@ import com.atguigu.gmall.bean.CartInfo;
 import com.atguigu.gmall.bean.EntitySku;
 import com.atguigu.gmall.cart.mapper.CartInfoMapper;
 import com.atguigu.gmall.util.RedisUtil;
-import com.atguigu.service.CartService;
+import com.atguigu.gmall.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import tk.mybatis.mapper.entity.Example;

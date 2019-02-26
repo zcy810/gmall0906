@@ -10,8 +10,8 @@ import com.atguigu.gmall.annotation.LoginRequired;
 import com.atguigu.gmall.bean.OrderInfo;
 import com.atguigu.gmall.bean.PaymentInfo;
 import com.atguigu.gmall.payment.conf.AlipayConfig;
-import com.atguigu.service.OrderService;
-import com.atguigu.service.PaymentService;
+import com.atguigu.gmall.service.OrderService;
+import com.atguigu.gmall.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -37,7 +37,7 @@ public class PaymentController {
     @RequestMapping("/alipay/submit")
     @ResponseBody
     public String goToPay(HttpServletRequest request, String outTradeNo, BigDecimal totalAmount) {
-        OrderInfo orderInfo = orderService.getOrderByOutTradeno(outTradeNo);
+        OrderInfo orderInfo = orderService.getOrderByOutTradeNo(outTradeNo);
         String skuName = orderInfo.getOrderDetailList().get(0).getSkuName();
 
         AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();

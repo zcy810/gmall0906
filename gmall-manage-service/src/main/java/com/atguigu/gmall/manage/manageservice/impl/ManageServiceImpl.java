@@ -3,12 +3,9 @@ package com.atguigu.gmall.manage.manageservice.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.atguigu.gmall.bean.*;
 import com.atguigu.gmall.manage.mapper.*;
-import com.atguigu.service.ManageService;
-import javafx.scene.media.SubtitleTrack;
-import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
+import com.atguigu.gmall.service.ManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

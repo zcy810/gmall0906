@@ -5,10 +5,10 @@ import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.bean.EntitySku;
 import com.atguigu.gmall.bean.UserAddress;
 import com.atguigu.gmall.bean.UserInfo;
-import com.atguigu.gmall.user.mapper.UserAddMapper;
-import com.atguigu.gmall.user.mapper.UserMapper;
+import com.atguigu.gmall.user.mapper.UserAddressMapper;
+import com.atguigu.gmall.user.mapper.UserInfoMapper;
 import com.atguigu.gmall.util.RedisUtil;
-import com.atguigu.service.UserService;
+import com.atguigu.gmall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
@@ -18,9 +18,9 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserMapper userMapper;
+    private UserInfoMapper userMapper;
     @Autowired
-    private UserAddMapper userAddMapper;
+    private UserAddressMapper userAddressMapper;
     @Autowired
     RedisUtil redisUtil;
 
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public List<UserAddress> getAddById(String id) {
         UserAddress userAdd = new UserAddress();
         userAdd.setUserId(id);
-      return   userAddMapper.select(userAdd);
+      return   userAddressMapper.select(userAdd);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
             UserAddress userAdd = new UserAddress();
             userAdd.setUserId(id);
-            List<UserAddress> select = userAddMapper.select(userAdd);
+            List<UserAddress> select = userAddressMapper.select(userAdd);
             userLogin.setUserAddressList(select);
         }
         return userLogin;
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
     public UserAddress getAddressById(String deliveryAddressId) {
         UserAddress userAddress = new UserAddress();
         userAddress.setId(deliveryAddressId);
-        UserAddress userAddress1 = userAddMapper.selectOne(userAddress);
+        UserAddress userAddress1 = userAddressMapper.selectOne(userAddress);
 
         return userAddress1;
     }

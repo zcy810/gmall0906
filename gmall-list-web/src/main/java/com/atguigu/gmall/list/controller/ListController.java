@@ -2,16 +2,14 @@ package com.atguigu.gmall.list.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.atguigu.gmall.bean.*;
-import com.atguigu.service.AttrService;
-import com.atguigu.service.ListService;
+import com.atguigu.gmall.service.AttrService;
+import com.atguigu.gmall.service.ListService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Controller
